@@ -1,0 +1,105 @@
+package Earl;
+import java.util.Scanner;
+
+
+public class labact1 {
+	private class Room {
+        int roomNumber; // Room number
+        Room left, right; // Pointers to left and right children
+
+        public Room(int roomNumber) {
+            this.roomNumber = roomNumber;
+            left = right = null; // Initialize children as null
+        }
+    }
+
+    private Room root; // Root of the BST
+
+    // Method to insert a room into the BST
+    public void insert(int roomNumber) {
+        root = insertRec(root, roomNumber);
+    }
+
+    // Helper method to insert a room recursively
+    private Room insertRec(Room root, int roomNumber) {
+        // If the current position is empty, create a new room
+        if (root == null) {
+            return new Room(roomNumber);
+        }
+        // Decide to go left or right based on the room number
+        if (roomNumber < root.roomNumber) {
+            root.left = insertRec(root.left, roomNumber); // Go left
+        } else if (roomNumber > root.roomNumber) {
+            root.right = insertRec(root.right, roomNumber); // Go right
+        }
+        return root; // Return the unchanged node
+    }
+
+    // Method to search for a room using preorder traversal
+    public boolean searchPreorder(int roomNumber) {
+        return searchPreorderRec(root, roomNumber);
+    }
+
+    // Helper method for preorder search
+    private boolean searchPreorderRec(Room root, int roomNumber) {
+        if (root == null) {
+            return false; // Room not found
+        }
+        // Print the current room number
+        System.out.print(root.roomNumber + " ");
+        // Check if this is the room we are looking for
+        if (root.roomNumber == roomNumber) {
+            return true; // Room found
+        }
+        // Search in left and right subtrees
+        return searchPreorderRec(root.left, roomNumber) || searchPreorderRec(root.right, roomNumber);
+    }
+
+    // Method to search for a room using postorder traversal
+    public boolean searchPostorder(int roomNumber) {
+        return searchPostorderRec(root, roomNumber);
+    }
+
+    // Helper method for postorder search
+    private boolean searchPostorderRec(Room root, int roomNumber) {
+        if (root == null) {
+            return false; // Room not found
+        }
+        // Search in left and right subtrees first
+        boolean foundInLeft = searchPostorderRec(root.left, roomNumber);
+        boolean foundInRight = searchPostorderRec(root.right, roomNumber);
+        // Print the current room number after searching children
+        System.out.print(root.roomNumber + " ");
+        // Return true if the room is found in either subtree or the current room
+        return foundInLeft || foundInRight || (root.roomNumber == roomNumber);
+    }
+
+    // Main method to run the program
+    public static void main(String[] args) {
+    	labact1 hotel = new labact1();
+        Scanner scanner = new Scanner(System.in);
+        
+        // Sample room numbers to insert
+        int[] roomNumbers = {101, 102, 103, 104, 105};
+        for (int roomNumber : roomNumbers) {
+            hotel.insert(roomNumber); // Insert sample room numbers
+        }
+        
+        // Search for a room using preorder
+        System.out.print("Enter room number to search (Preorder): ");
+        int roomToSearchPre = scanner.nextInt();
+        System.out.print("Preorder Search Path: ");
+        boolean foundPre = hotel.searchPreorder(roomToSearchPre);
+        System.out.println("\nRoom found (Preorder): " + foundPre);
+
+        // Search for a room using postorder
+        System.out.print("\nEnter room number to search (Postorder): ");
+        int roomToSearchPost = scanner.nextInt();
+        System.out.print("Postorder Search Path: ");
+        boolean foundPost = hotel.searchPostorder(roomToSearchPost);
+        System.out.println("\nRoom found (Postorder): " + foundPost);
+
+        scanner.close(); // Close the scanner
+    }
+}
+
