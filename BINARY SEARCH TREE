@@ -1,0 +1,108 @@
+package Earl;
+import java.util.Scanner;
+
+public class labact1 {
+    private class Room {
+        int roomNumber; 
+        Room left, right; 
+
+        public Room(int roomNumber) {
+            this.roomNumber = roomNumber;
+            left = right = null; 
+        }
+    }
+
+    private Room root; 
+
+    public void insert(int roomNumber) {
+        root = insertRec(root, roomNumber);
+    }
+
+    private Room insertRec(Room root, int roomNumber) {
+        if (root == null) {
+            return new Room(roomNumber); 
+        }
+        if (roomNumber < root.roomNumber) {
+            root.left = insertRec(root.left, roomNumber); 
+        } else {
+            root.right = insertRec(root.right, roomNumber); 
+        }
+        return root; 
+    }
+
+    public boolean searchPreorder(int roomNumber) {
+        return searchPreorderRec(root, roomNumber);
+    }
+
+    private boolean searchPreorderRec(Room root, int roomNumber) {
+        if (root == null) return false; 
+        System.out.print(root.roomNumber + " "); 
+        if (root.roomNumber == roomNumber) return true; 
+        return searchPreorderRec(root.left, roomNumber) || searchPreorderRec(root.right, roomNumber);
+       
+    }
+
+    public boolean searchPostorder(int roomNumber) {
+        return searchPostorderRec(root, roomNumber);
+    }
+
+    private boolean searchPostorderRec(Room root, int roomNumber) {
+        if (root == null) return false; 
+
+        boolean foundInLeft = searchPostorderRec(root.left, roomNumber);
+        boolean foundInRight = searchPostorderRec(root.right, roomNumber);
+
+        if (root.roomNumber == roomNumber) {
+            System.out.print(root.roomNumber + " "); 
+            return true; 
+        }
+
+        System.out.print(root.roomNumber + " ");
+        return foundInLeft || foundInRight; 
+    }
+
+    public static void main(String[] args) {
+        labact1 hotel = new labact1();
+        Scanner scanner = new Scanner(System.in);
+        
+        hotel.insert(101);
+        hotel.insert(102);
+        hotel.insert(103);
+        hotel.insert(104);
+        hotel.insert(105);
+        
+        System.out.print("** HOTEL ROOM MANAGEMENT SYSTEM **");
+        System.out.print("\n**************************"+"\n CHOOSE A ROOM "+"\n Room 101    Room 102    Room 103"+"\n Room 104    Room 105"+"\n**************************");
+        
+        System.out.print("\nChoose a Technique"+"\n [1] Preorder   [2] Postorder: ");
+        int sel = scanner.nextInt();
+        
+        if (sel == 1) {
+        	System.out.print("\nEnter room number to search: ");
+            int roomToSearchPre = scanner.nextInt();
+            System.out.print("Preorder Search Path: ");
+            boolean foundPre = hotel.searchPreorder(roomToSearchPre);
+            System.out.println("\nRoom found: " + foundPre);
+            
+            if (roomToSearchPre>105 && roomToSearchPre<101) {
+            	System.out.print("ERROR! PLEASE RUN AGAIN!");
+            }
+        }
+        if (sel == 2) {
+        	System.out.print("\nEnter room number to search: ");
+            int roomToSearchPost = scanner.nextInt();
+            System.out.print("Postorder Search Path: ");
+            boolean foundPost = hotel.searchPostorder(roomToSearchPost);
+            System.out.println("\nRoom found: " + foundPost);
+            if (roomToSearchPost>105 && roomToSearchPost<101) {
+            	System.out.print("ERROR! PLEASE RUN AGAIN!");
+            }
+        	
+        }
+       
+        
+
+        scanner.close(); 
+    } 
+}
+
